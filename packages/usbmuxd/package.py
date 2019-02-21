@@ -24,10 +24,14 @@ class Usbmuxd(Package):
     depends_on('libplist')
     depends_on('libusb')
 
-    def install(self, spec, prefix):
+    phases = ['autogen', 'install']
+
+    def autogen(self, spec, prefix):
         if self.spec.satisfies('@master'):
             autogen = Executable('./autogen.sh')
             autogen()
+
+    def install(self, spec, prefix):
         configure('--disable-dependency-tracking',
                   '--disable-silent-rules',
                   '--prefix=%s' % self.spec.prefix)

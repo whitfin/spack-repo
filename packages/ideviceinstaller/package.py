@@ -25,10 +25,14 @@ class Ideviceinstaller(Package):
     depends_on('libimobiledevice')
     depends_on('libzip')
 
-    def install(self, spec, prefix):
+    phases = ['autogen', 'install']
+
+    def autogen(self, spec, prefix):
         if self.spec.satisfies('@master'):
             autogen = Executable('./autogen.sh')
             autogen()
+
+    def install(self, spec, prefix):
         configure('--disable-dependency-tracking',
                   '--prefix=%s' % self.spec.prefix)
         make('install')

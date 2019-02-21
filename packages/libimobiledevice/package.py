@@ -25,10 +25,17 @@ class Libimobiledevice(Package):
     depends_on('libusbmuxd')
     depends_on('openssl')
 
-    def install(self, spec, prefix):
+    phases = ['autogen', 'install']
+
+    def setup_environment(self, spack_env, run_env):
+        spack_env.append_flags('LDFLAGS', self.spec['openssl'].libs.search_flags)
+
+    def autogen(self, spec, prefix):
         if self.spec.satisfies('@master'):
             autogen = Executable('./autogen.sh')
             autogen()
+
+    def install(self, spec, prefix):
         configure('--disable-dependency-tracking',
                   '--disable-silent-rules',
                   '--enable-debug-code',

@@ -22,10 +22,14 @@ class Libusb(Package):
     depends_on('automake', type='build', when='@master')
     depends_on('libtool',  type='build', when='@master')
 
-    def install(self, spec, prefix):
+    phases = ['autogen', 'install']
+
+    def autogen(self, spec, prefix):
         if self.spec.satisfies('@master'):
             autogen = Executable('./autogen.sh')
             autogen()
+
+    def install(self, spec, prefix):
         configure('--disable-dependency-tracking',
                   '--prefix=%s' % self.spec.prefix)
         make('install')

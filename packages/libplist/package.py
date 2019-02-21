@@ -29,10 +29,14 @@ class Libplist(Package):
     depends_on('libtool',    type='build', when='@master')
     depends_on('pkg-config', type='build')
 
-    def install(self, spec, prefix):
+    phases = ['autogen', 'install']
+
+    def autogen(self, spec, prefix):
         if self.spec.satisfies('@master'):
             autogen = Executable('./autogen.sh')
             autogen()
+
+    def install(self, spec, prefix):
         configure('--disable-dependency-tracking',
                   '--disable-silent-rules',
                   '--prefix=%s' % self.spec.prefix,
